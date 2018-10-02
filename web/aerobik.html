@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+
+        <style>
+            body{
+                overflow: hidden;
+
+            }
+            .vezba{
+                width: 500px;
+                height: 350px;
+            }
+
+            table{
+                border: none;
+                border-collapse: collapse;
+
+            }
+            td{
+                padding:10px 5px;
+                text-align: justify;
+                font-size: 120%;
+
+
+            }
+            th{
+                padding:5px 15px;
+                border: 1px solid #ddd;
+                background-color: #ddd;
+                font-size: 130%;
+
+
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <table>
+                <tr><th>Naziv vezbe:</th><th>Opis:</th><th>Slika:</th></tr>
+                <tr></tr>
+                <tr><td><p></p></td></tr>
+                <tr v-for="v in vezbe">
+                    <td><h2>{{v.naziv}}</h2></td>
+                    <td>{{v.opis}}</td>
+                    <td><img class="vezba" src="images/aerobik.jpg"></td>
+                </tr>
+            </table>
+        </div>
+
+        <script>
+var app = new Vue({
+    el: "#app",
+    data: {
+        vezbe: []
+
+
+    },
+    methods: {
+        pretrazi() {
+            axios.post("app/vezba", {ime: "aerobik"}).then(function (result) {
+                app.vezbe = result.data;
+            });
+        }
+    },
+    beforeMount() {
+        this.pretrazi();
+    }
+});
+        </script>
+    </body>
+</html>

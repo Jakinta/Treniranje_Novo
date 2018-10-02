@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+
+        <style>
+            #unos{
+
+                pading: 5px;
+
+            }
+            #unos td{
+                text-align: left;
+            }
+
+            table{
+
+                pading: 5px;
+            }
+            td{
+                border: 1px solid black;
+                padding: 5px;
+                text-align: center;
+            }
+            th{
+
+                background-color: #ddd;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div id="app">
+            <table id="unos">
+                <tr><th><h2>Izaberite krvnu grupu:</h2></th><th><h2>Izaberite cilj:</h2></th><th><h2>Izaberite nivo:</h2></th></tr>
+                <td>
+                    <section>
+                        <input type="radio" v-model="vezbac.krGrupa" name="krGrupa" value="A">A<br>
+                        <input type="radio" v-model="vezbac.krGrupa" name="krGrupa" value="B">B<br>
+                        <input type="radio" v-model="vezbac.krGrupa" name="krGrupa" value="AB">AB<br>
+                        <input type="radio" v-model="vezbac.krGrupa" name="krGrupa" value="0">0<br>
+                    </section>
+                </td>
+
+                <td>
+                    <section>
+                        <input type="radio" v-model="vezbac.cilj" name="cilj" value="masa">MASA (povecanje misicne mase vezbaca)<br>
+                        <input type="radio" v-model="vezbac.cilj" name="cilj" value="definicija">DEFINICIJA (formiranje lepo oblikovane muskulature)<br>
+                        <input type="radio" v-model="vezbac.cilj" name="cilj" value="izdrzljivost">IZDRZLJIVOST (povecanje misicne sposobnosti vezbaca)<br>
+                        <input type="radio" v-model="vezbac.cilj" name="cilj" value="kardio">KARDIO (poboljsanje karakteristika pluca i kardiovaskularnog sistema)
+                    </section>
+                </td>
+
+                <td>
+                    <section>
+                        <input type="radio" v-model="vezbac.nivo" name="nivo" value="rekreativni">rekreativni<br>
+                        <input type="radio" v-model="vezbac.nivo" name="nivo" value="umereni">umereni<br>
+                        <input type="radio" v-model="vezbac.nivo" name="nivo" value="intenzivni">intenzivni
+                    </section>
+                </td>
+            </table>    
+            <p></p>
+            <button @click="ucitajPrVIsh">prikazi</button>
+            <p></p>
+            <p></p>
+            <p></p>
+            <div></div>
+            <br>
+            <table>
+                <tr><th>{{zaglavlje.NazivVezbe}}</th><th>{{zaglavlje.Ucestalost}}</th><th>{{zaglavlje.Trajanje}}</th><th>{{zaglavlje.BrojSerija}}</th><th>{{zaglavlje.BrojPonavljanja}}</th><th>{{zaglavlje.Napomena}}</th></tr>
+                <tr v-for="v in vezbe">
+                    <td>{{v.naziv}}</td>
+                    <td>{{v.ucestalost}}</td>
+                    <td>{{v.trajanje}}</td>
+                    <td>{{v.brSerija}}</td>
+                    <td>{{v.brPonavljanja}}</td>
+                    <td>{{v.napomena}}</td>
+                </tr>
+            </table>
+            <p></p>
+            <table>
+                <tr><th>{{zaglavlje1.Proteini}}</th><th>{{zaglavlje1.UgljHidrati}}</th><th>{{zaglavlje1.Masti}}</th><th>{{zaglavlje1.Primer}}</th></tr>
+                <tr v-for="i in prIshrana">
+                    <td>{{i.proteini}}</td>
+                    <td>{{i.ugljHidrati}}</td>
+                    <td>{{i.masti}}</td>
+                    <td>{{i.primer}}</td>
+                </tr>
+            </table>
+            <p></p>
+            <textarea rows="4" cols="50" v-model="komentar.tekst" placeholder="Unesite komentar">
+               
+            </textarea>
+            <button @click="posalji">posalji</button>
+        </div>
+
+        <script>
+var app = new Vue({
+    el: "#app",
+    data: {
+        vezbe: [],
+        prIshrana: [],
+        vezbac: {},
+        komentar: {},
+        zaglavlje: {},
+        zaglavlje1: {}
+
+    },
+    methods: {
+
+        ucitajPrVIsh() {
+            axios.post("app/vezbanje", app.vezbac).then(function (result) {
+                if (result.data == "ERR") {
+                    window.location = "index1.html";
+                } else {
+                    app.zaglavlje.NazivVezbe = "Naziv vezbe";
+                    app.zaglavlje.Ucestalost = "Ucestalost(x nedeljno)";
+                    app.zaglavlje.Trajanje = "Trajanje";
+                    app.zaglavlje.BrojSerija = "Broj serija";
+                    app.zaglavlje.BrojPonavljanja = "Broj ponavljanja";
+                    app.zaglavlje.Napomena = "Napomena";
+                    app.vezbe = result.data;
+                    app.ucitajIsh();
+                }
+            });
+        },
+
+        ucitajIsh() {
+            axios.post("app/vezbanje/ishrana", app.vezbac).then(function (result) {
+                app.zaglavlje1.Proteini = "Kolicina proteina u gramima";
+                app.zaglavlje1.UgljHidrati = "Kolicina ugljenih hidrata u gramima";
+                app.zaglavlje1.Masti = "Kolicina masti u gramima";
+                app.zaglavlje1.Primer = "Primer dnevnog jelovnika";
+                app.prIshrana = result.data;
+            });
+        },
+        posalji() {
+            axios.put("app/vezbanje", app.komentar).then(function (result) {
+            });
+        }
+    }
+});
+        </script>
+    </body>
+</html>

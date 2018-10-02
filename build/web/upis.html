@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+        <style>
+            table{
+
+                padding: 5px;
+                border-collapse: collapse;
+            }
+            th{
+                background-color: #ddd;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <h1>Podaci o treningu</h1>
+            <p><h4>Unesite trajanje treninga, i ako zelite unesite i izmereni puls u broju otkucaja u minutu ili izdrzaj u skleku u sekundama, u zavisnosti od cilja:</h4></p>
+            <table>
+                <tr><td>Trajanje:</td><td><input type="text" v-model="trening.trajanje"/></td></tr>
+                <tr><td>Puls:</td><td><input type="text" v-model="trening.puls" /></td></tr>
+                <tr><td>Izdrzljivost:</td><td><input type="text" v-model="trening.izdrzljivost" /></td></tr>
+            </table>
+                <button @click="unesi">unesi</button>
+            <h1>Podaci o vezbi</h1>
+            <p><h4>Unesite naziv vezbe, trajanje vezbe u minutima ako je aerobna, odnosno broj serija i broj ponavljanja u okviru svake serije ako je vezba anaerobna:</h4></p>
+            <table>
+                <tr><td>Naziv vezbe:</td><td><input type="text" v-model="vezba.naziv"/></td></tr>
+                <tr><td>Trajanje vezbe:</td><td><input type="text" v-model="vezba.trajanje"/></td></tr>
+                <tr><td>Broj serija:</td><td><input type="text" v-model="vezba.brSerija"/></td></tr>
+                <tr><td>Broj ponavljanja:</td><td><input type="text" v-model="vezba.brPonavljanja"/></td></tr>
+            </table>
+                <button @click="upisi">upisi</button>
+        </div>
+        <script>
+            var app = new Vue({
+                el:"#app",
+                data: {
+                    trening: {},
+                    vezba: {}
+                    
+                },
+                methods: {
+                    unesi(){
+                        axios.post("app/dnevnikVezbanja",app.trening).then(function(result){
+                            if(result.data=="ERR"){
+                                window.location="index1.html";
+                            }
+                        });
+                    },
+                    upisi(){
+                        axios.put("app/dnevnikVezbanja/vezbe",app.vezba).then(function(result){
+                            
+                        });
+                        
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

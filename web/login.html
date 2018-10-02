@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+        
+        <style>
+            #login{
+                position: absolute;
+                left: 350px;
+                top:200px;
+                font-size: 30px;
+                text-align: left;
+                
+            }
+            #dugme{
+                font-size: 15px;
+                position: absolute;
+                left: 280px;
+                width: 85px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="content" > 
+            <div class="navbar" >
+                <div class="dropdown">
+                    <button class="dropbtn">PREGLED VEZBI
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content" >
+                        <table>
+                            <tr v-for="v in vezbe">
+                                <td><a :href="v.vez_naziv + '.html'"> {{v.vez_naziv}}</a></td>
+                            </tr>
+
+                        </table>
+                    </div> 
+                </div>
+
+                <a href="komentari.html">KOMENTARI PROGRAMA VEZBANJA</a>
+                <a href="vezbanje.html">VEZBAJ</a>
+                <div class="dropdown">
+                    <button class="dropbtn">DNEVNIK VEZBANJA
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="upis.html">upisivanje</a>
+                        <a href="pregled.html">pregledanje</a>
+                    </div>
+                </div>
+                <a href="rezultati.html">REZULTATI VEZBANJA</a>
+                <a href="posetilac.html">REGISTRACIJA</a>
+                <a href="login.html">LOGIN</a>
+               
+
+            </div>
+
+            <div  id="login">
+                <table>
+                    <tr><th>Unesi email:</th> <td><input type="text" v-model="user.email"/></td> </tr>
+                    <tr><th>Unesi password:</th><td> <input type="password" v-model="user.pass"/></td></tr>
+                </table>
+                <button id="dugme" @click="logujse">uloguj se</button><br>               
+                <p style="color:red">{{message}}</p>
+            </div>
+        </div> 
+        
+        <script>
+var app = new Vue({
+    el: "#content",
+    data: {
+        vezbe: [],
+        user:{},
+        message:""
+
+
+    },
+  
+
+    methods: {
+             ucitaj() {
+            axios.get("app/vezbe")
+                    .then(function (result) {
+                        app.vezbe = result.data;
+                    });
+        },
+        
+        logujse() {
+            axios.post("app/login", app.user).then(function (response) {
+                if (response.data == "OK") {
+                    window.location = "index.html";
+                } else {
+                    app.user = {};
+                    app.message = "Email ili password nisu ispravni";
+                }
+
+            });
+        }
+    },
+    beforeMount() {
+        this.ucitaj();
+    }
+        
+        
+        
+    
+});
+        </script>
+
+    </body>
+</html>

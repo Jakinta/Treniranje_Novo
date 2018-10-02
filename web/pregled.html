@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+        
+        <style>
+            #treninzi{
+                border: 1px solid black;
+                border-collapse: collapse;
+                padding: 5px;
+                position: absolute;
+                top: 10%;
+                left: 5%;
+            }
+            th{
+                text-align: center;
+                background-color: #ddd;
+                overflow: auto;
+                padding: 5px;
+            }
+            td{
+                text-align: center;
+                border: 1px solid black;
+                padding: 7px;
+                
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <h2 style="text-align: center">Podaci o treninzima</h2>
+            <table id="treninzi">
+                <tr><th>Email</th><th>Datum treninga</th><th>Trajanje treninga u minutima</th><th>Puls u minutu</th><th>Izdrzljivost u skleku u sekundama</th>
+                    <th>Naziv vezbe</th><th>Trajanje vezbe</th><th>Broj serija</th><th>Broj ponavljanja</th></tr>    
+            <tr v-for="p in podaci">
+                <td>{{p.email}}</td>
+                <td> {{p.datum}}</td>
+                <td>{{p.trajanjeTreninga}} </td>
+                <td>{{p.puls}} </td>
+                <td>{{p.izdrzljivost}} </td>
+                <td>{{p.naziv}}</td>
+                <td> {{p.trajanjeVezbe}}</td>
+                <td>{{p.brSerija}}</td>
+                <td>{{p.brPonavljanja}}</td>
+                
+            </tr>
+            </table>
+        </div>
+        
+        <script>
+            var app = new Vue({
+                el:"#app",
+                data: {
+                    podaci: []
+                },
+                methods:{
+                    prikazi(){
+                        axios.get("app/dnevnikVezbanja").then(function(result){
+                            if(result.data == "ERR")
+                                window.location = "index1.html";
+                            else
+                            app.podaci = result.data;
+                        });
+                    }
+                },
+                beforeMount(){
+                    this.prikazi();                    
+                }
+            });
+        </script>
+    </body>
+</html>

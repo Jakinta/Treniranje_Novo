@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+        
+        <style>
+            #rezultati{
+                overflow: hidden;
+                border-collapse: collapse;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                top: 5%;
+                
+            }
+            th{
+                background-color: #ddd;
+                padding: 10px 10px; 
+                text-align: center;
+            }
+            td{
+                padding: 5px 10px;
+                text-align: center;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <div id="app">
+            <table id="rezultati">
+              <tr><th>Email</th><th>Datum</th><th>Puls</th><th>Izdrzljivost</th></tr>    
+                <tr v-for="r in rezultati">
+                <td> {{r.email}}</td>
+                <td> {{r.datum}}</td>
+                <td> {{r.puls}}</td>
+                <td> {{r.izdrzljivost}}</td>
+                
+              </tr>
+            </table>
+        </div>
+        
+        <script>
+            var app = new Vue({
+                el:"#app",
+                data: {
+                    rezultati:[]
+                },
+                methods: {
+                    prikazi(){
+                        axios.get("app/rezultat").then(function(result){
+                            if(result.data=="ERR"){
+                                window.location="index1.html";
+                            }else
+                           app.rezultati = result.data;  
+                        });
+                                
+                    }
+                },
+                beforeMount(){
+                    this.prikazi();
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+        <style>
+            table, td {
+                border-width:0px;
+            }
+            #posetilac{
+                position: absolute;
+                top: 200px;
+                left: 350px;
+                font-size: 20px;
+                text-align: left;
+                
+            }
+            #dugme{
+                font-size: 15px;
+                position: absolute;
+                left: 135px;
+                width: 100px;
+                
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="content" > 
+            <div class="navbar" >
+                <div class="dropdown">
+                    <button class="dropbtn">PREGLED VEZBI
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <table>
+                            <tr v-for="v in vezbe">
+                                <td><a :href="v.vez_naziv + '.html'"> {{v.vez_naziv}}</a></td>
+                            </tr>
+
+                        </table>
+                    </div> 
+                </div>
+
+                <a href="komentari.html">KOMENTARI PROGRAMA VEZBANJA</a>
+                <a href="vezbanje.html">VEZBAJ</a>
+                <div class="dropdown">
+                    <button class="dropbtn">DNEVNIK VEZBANJA
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="upis.html">upisivanje</a>
+                        <a href="pregled.html">pregledanje</a>
+                    </div>
+                </div>
+                <a href="rezultati.html">REZULTATI VEZBANJA</a>
+                <a href="posetilac.html">REGISTRACIJA</a>
+                <a href="login.html">LOGIN</a>
+                
+
+            </div>
+
+            <div id="posetilac">
+                <h1>Registracija</h1>
+
+                <table>
+                    <tr><td>Ime:</td><td><input type="text" v-model="posetilac.ime" /></td></tr>
+                    <tr><td>Prezime:</td><td><input type="text" v-model="posetilac.prezime" /></td></tr>
+                    <tr><td>Email:</td><td><input type="text" v-model="posetilac.email" @blur="proveri"/></td></tr>
+                    <tr><td>Password:</td><td><input type="password" v-model="posetilac.pass" /></td></tr>
+
+                    <tr><td><button id="dugme" @click="dodaj">registruj se</button></td></tr>
+                </table>
+                
+                <p style="color:red; padding-top: 20px;">{{message}}</p>
+            </div>
+        </div> 
+
+
+        <script>
+var app = new Vue({
+el: "#content",
+data: {
+           vezbe: [],
+           posetilac: {},
+           message:"",
+           status: ""
+        },
+        
+methods:{
+        ucitaj() {
+           axios.get("app/vezbe")
+                .then(function (result) {
+                app.vezbe = result.data;
+                });
+        },
+       
+
+
+        dodaj(){
+           axios.post("app/posetilac", app.posetilac).then(function(result){
+              if (result.data == "ERR"){
+              app.message = "Uneli ste neispravan email";
+              app.status = "ERR";
+              }
+              else app.status = "OK";
+           });
+              if (app.status == "OK")
+                axios.put("app/posetilac", app.posetilac).then(function(result){
+                window.location = "index.html";
+        });
+        },
+        
+        proveri(){
+             axios.post("app/posetilac/", app.posetilac).then(function(result){
+                if (result.data == "ERR")
+                app.message = "Uneli ste neispravan email";
+             });
+        }
+      },
+beforeMount() {
+           this.ucitaj();
+}
+});
+        </script>
+    </body>
+</html>
